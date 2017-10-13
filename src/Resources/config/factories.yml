@@ -1,0 +1,10 @@
+services:
+
+    pim_catalog.factory.value.text_collection:
+        class: '%pim_catalog.factory.value.scalar.class%'
+        public: false
+        arguments:
+            - '%pim_catalog.entity.value.scalar.class%'
+            - 'pim_catalog_text'
+        tags:
+            - { name: pim_catalog.factory.value }
