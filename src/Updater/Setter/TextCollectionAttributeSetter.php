@@ -2,8 +2,10 @@
 
 namespace Pim\Bundle\ExtendedAttributeTypeBundle\Updater\Setter;
 
+use Pim\Component\Catalog\Builder\EntityWithValuesBuilderInterface;
 use Pim\Component\Catalog\Builder\ProductBuilderInterface;
 use Pim\Component\Catalog\Model\AttributeInterface;
+use Pim\Component\Catalog\Model\EntityWithValuesInterface;
 use Pim\Component\Catalog\Model\ProductInterface;
 use Pim\Component\Catalog\Updater\Setter\AbstractAttributeSetter;
 use Pim\Component\Catalog\Validator\AttributeValidatorHelper;
@@ -23,11 +25,10 @@ class TextCollectionAttributeSetter extends AbstractAttributeSetter
      * @param array                    $supportedTypes
      */
     public function __construct(
-        ProductBuilderInterface $productBuilder,
-        AttributeValidatorHelper $attrValidatorHelper,
+        EntityWithValuesBuilderInterface $entityWithValuesBuilder,
         array $supportedTypes
     ) {
-        parent::__construct($productBuilder, $attrValidatorHelper);
+        parent::__construct($entityWithValuesBuilder);
         $this->supportedTypes = $supportedTypes;
     }
 
@@ -37,15 +38,15 @@ class TextCollectionAttributeSetter extends AbstractAttributeSetter
      * Expected data input format: "my text to update"
      */
     public function setAttributeData(
-        ProductInterface $product,
+        EntityWithValuesInterface $entityWithValues,
         AttributeInterface $attribute,
         $data,
         array $options = []
     ) {
         $options = $this->resolver->resolve($options);
-        $this->checkLocaleAndScope($attribute, $options['locale'], $options['scope'], 'text');
+        //$this->checkLocaleAndScope($attribute, $options['locale'], $options['scope'], 'text');
 
-        $this->setData($product, $attribute, $data, $options['locale'], $options['scope']);
+        $this->setData($entityWithValues, $attribute, $data, $options['locale'], $options['scope']);
     }
 
     /**
@@ -60,9 +61,6 @@ class TextCollectionAttributeSetter extends AbstractAttributeSetter
     protected function setData(ProductInterface $product, AttributeInterface $attribute, $data, $locale, $scope)
     {
         $value = $product->getValue($attribute->getCode(), $locale, $scope);
-        if (null === $value) {
-            $value = $this->productBuilder->addProductValue($product, $attribute, $locale, $scope);
-        }
         if (is_string($data) && '' === trim($data)) {
             $data = null;
         }
@@ -72,6 +70,6 @@ class TextCollectionAttributeSetter extends AbstractAttributeSetter
         if (empty($data)) {
             $data = null;
         }
-        $value->setData($data);
+        $this->entityWithValuesBuilder->addOrReplaceValue($product, $attribute, $locale, $scope, $data);
     }
 }
