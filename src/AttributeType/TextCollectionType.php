@@ -22,7 +22,7 @@ class TextCollectionType extends AbstractAttributeType
      */
     protected function defineCustomAttributeProperties(AttributeInterface $attribute)
     {
-        $properties = parent::defineCustomAttributeProperties($attribute) + [
+        $properties = $this->defineCustomAttributeProperties($attribute) + [
                 'validationRule' => [
                     'name'      => 'validationRule',
                     'fieldType' => 'choice',

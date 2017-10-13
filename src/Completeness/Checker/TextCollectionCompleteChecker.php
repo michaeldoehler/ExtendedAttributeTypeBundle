@@ -3,25 +3,25 @@
 namespace Pim\Bundle\ExtendedAttributeTypeBundle\Completeness\Checker;
 
 use Pim\Bundle\ExtendedAttributeTypeBundle\AttributeType\ExtendedAttributeTypes;
-use Pim\Component\Catalog\Completeness\Checker\ProductValueCompleteCheckerInterface;
+use Pim\Component\Catalog\Completeness\Checker\ValueCompleteCheckerInterface;
 use Pim\Component\Catalog\Model\ChannelInterface;
 use Pim\Component\Catalog\Model\LocaleInterface;
-use Pim\Component\Catalog\Model\ProductValueInterface;
+use Pim\Component\Catalog\Model\ValueInterface;
 
 /**
  * @author    JM Leroux <jean-marie.leroux@akeneo.com>
  * @copyright 2016 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class TextCollectionCompleteChecker implements ProductValueCompleteCheckerInterface
+class TextCollectionCompleteChecker implements ValueCompleteCheckerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function isComplete(
-        ProductValueInterface $productValue,
-        ChannelInterface $channel = null,
-        LocaleInterface $locale = null
+        ValueInterface $productValue,
+        ChannelInterface $channel,
+        LocaleInterface $locale
     ) {
         $collection = $productValue->getData();
 
@@ -31,8 +31,11 @@ class TextCollectionCompleteChecker implements ProductValueCompleteCheckerInterf
     /**
      * {@inheritdoc}
      */
-    public function supportsValue(ProductValueInterface $productValue)
-    {
+    public function supportsValue(
+        ValueInterface $productValue,
+        ChannelInterface $channel,
+        LocaleInterface $locale
+    ) {
         return ExtendedAttributeTypes::TEXT_COLLECTION === $productValue->getAttribute()->getAttributeType();
     }
 }
